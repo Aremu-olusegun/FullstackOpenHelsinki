@@ -6,7 +6,7 @@ const Total = (props) => {
   let newData = data.parts;
   return (
     <div>
-      <p>Total is {newData.map((x) => x.exercises).reduce((a, b) => a * b)}</p>
+      <p>Total is {newData.map((x) => x.exercises).reduce((a, b) => a + b)}</p>
     </div>
   );
 };
