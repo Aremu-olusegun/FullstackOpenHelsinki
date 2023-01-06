@@ -4,9 +4,16 @@ const Part = ({ part }) => {
   return (
     <div>
       <div>
-        <p>
-          {part.name} {part.exercises}
-        </p>
+        {part.parts.map((x) => {
+          return (
+            <div key={x.id}>
+              <p>
+                {x.name} {x.exercises}
+              </p>
+            </div>
+          );
+        })}
+        <p>{part.exercises}</p>
       </div>
     </div>
   );

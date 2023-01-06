@@ -1,12 +1,13 @@
 import React from "react";
 
 const Total = (props) => {
-  let data = props.parts;
-  console.log(data.parts);
-  let newData = data.parts;
+  console.log(props);
   return (
     <div>
-      <p>Total is {newData.map((x) => x.exercises).reduce((a, b) => a + b)}</p>
+      <h3>
+        total of {props.parts.map((x) => x.exercises).reduce((a, b) => a + b)}{" "}
+        exercises
+      </h3>
     </div>
   );
 };

@@ -3,16 +3,19 @@ import Part from "./Part";
 
 const Content = (props) => {
   let data = props.parts;
-  let newData = data.parts
-  return <div>
-    {newData.map((file) => {
-        return(
-            <div>
-                <Part part={file}/>
-            </div>
-        )
-    })}
-  </div>;
+  let newData = data;
+  return (
+    <div>
+      {newData.map((file) => {
+        return (
+          <div key={file}>
+            <h1>{file.name}</h1>
+            <Part part={file} file={props}/>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 export default Content;
