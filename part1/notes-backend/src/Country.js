@@ -1,6 +1,22 @@
+import axios from "axios";
 import React from "react";
+import { useEffect } from "react";
 
 const Country = ({ country }) => {
+  useEffect(() => {
+    const params = {
+      access_key: process.env.REACT_APP_API_KEY,
+      query: country.capital[0],
+    };
+
+    axios
+      .get("http://api.weatherstack.com/current", { params })
+      .then((response) => {
+        const apiResponse = response.data;
+        console.log(apiResponse);
+      });
+  });
+
   return (
     <div>
       <h1>{country.name.common}</h1>
