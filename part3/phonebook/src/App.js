@@ -60,7 +60,7 @@ const App = () => {
 
   const deletePerson = (id, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      noteServices.delete(`http://localhost:3500/persons/${id}`).then((response) => {
+      noteServices.deletePerson(`${id}`).then((response) => {
         // update the state to reflect the changes
         setPersons(persons.filter((person) => person.id !== id));
       });
@@ -106,7 +106,6 @@ const App = () => {
       {persons && persons.length > 0 ? (
         persons.map((user) => (
           <li key={user.id} className="user">
-            {console.log(user.id)}
             <span className="user-name">{user.name}</span>
             <span className="user-number">{user.number}</span>
             <button onClick={() => deletePerson(user.id, user.name)}>
