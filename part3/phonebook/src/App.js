@@ -56,7 +56,6 @@ const App = () => {
       setData({ name: "", number: "" });
     });
   }
-  console.log(persons);
 
   return (
     <div>
@@ -99,6 +98,7 @@ const App = () => {
           <li key={user.id} className="user">
             <span className="user-name">{user.name}</span>
             <span className="user-number">{user.number}</span>
+            <button>delete</button>
           </li>
         ))
       ) : (
