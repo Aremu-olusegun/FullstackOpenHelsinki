@@ -7,7 +7,7 @@ const getAll = () => {
 };
 
 const deletePerson = (id, newObject) => {
-  return axios.put(`${baseUrl}/${id}`, newObject);
+  return axios.delete(`${baseUrl}/${id}`, newObject);
 };
 
 let all = {

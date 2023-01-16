@@ -60,7 +60,7 @@ const App = () => {
 
   const deletePerson = (id, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      axios.delete(`http://localhost:3500/persons/${id}`).then((response) => {
+      noteServices.delete(`http://localhost:3500/persons/${id}`).then((response) => {
         // update the state to reflect the changes
         setPersons(persons.filter((person) => person.id !== id));
       });
