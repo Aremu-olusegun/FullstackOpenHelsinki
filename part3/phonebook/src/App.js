@@ -57,6 +57,15 @@ const App = () => {
     });
   }
 
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
+      axios.delete(`http://localhost:3500/persons/${id}`).then((response) => {
+        // update the state to reflect the changes
+        setPersons(persons.filter((person) => person.id !== id));
+      });
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -96,9 +105,12 @@ const App = () => {
       {persons && persons.length > 0 ? (
         persons.map((user) => (
           <li key={user.id} className="user">
+            {console.log(user.id)}
             <span className="user-name">{user.name}</span>
             <span className="user-number">{user.number}</span>
-            <button>delete</button>
+            <button onClick={() => deletePerson(user.id, user.name)}>
+              delete
+            </button>
           </li>
         ))
       ) : (
