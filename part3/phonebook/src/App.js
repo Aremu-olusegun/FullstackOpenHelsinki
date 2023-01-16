@@ -1,5 +1,6 @@
 import axios from "axios";
 import React from "react";
+import noteServices from "./services/noteServices";
 import { useState, useEffect } from "react";
 
 const App = () => {
@@ -11,7 +12,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    axios.get("http://localhost:3500/persons").then((response) => {
+    noteServices.getAll().then((response) => {
       setPersons(response.data);
     });
   }, []);
