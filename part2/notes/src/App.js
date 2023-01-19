@@ -1,17 +1,18 @@
-import axios from "axios";
 import { useState } from "react";
 import Note from "./Note";
 import "./index.css";
 import notesService from "./services/notesServices";
+import Notification from "./Notification";
 import { useEffect } from "react";
 
 const App = () => {
   const [newValue, setNewValue] = useState("");
   const [notes, setNotes] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
 
   useEffect(() => {
     notesService.getAll().then((response) => setNotes(response.data)).catch(error => console.log('fail'))
-  });
+  }, []);
 
   const handleTextChange = (e) => {
     setNewValue(e.target.value);
@@ -23,7 +24,13 @@ const App = () => {
 
     notesService.update(id, changedNote).then((response) => {
       setNotes(notes.map((note) => (note.id !== id ? note : response.data)));
-    });
+    }).catch(error => {
+      setErrorMessage(`Note '${note.content}' was already removed from server`)        
+      setTimeout(() => {          
+        setErrorMessage(null)      
+      }, 5000)        
+      setNotes(notes.filter(n => n.id !== id))
+    })
   };
 
   function addNote(event) {
@@ -42,6 +49,8 @@ const App = () => {
 
   return (
     <div>
+      <h1>Notes</h1>
+      <Notification message={errorMessage}/>
       <form onSubmit={addNote}>
         <input value={newValue} onChange={handleTextChange} />
         <div>

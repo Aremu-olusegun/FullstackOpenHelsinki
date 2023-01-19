@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
 import noteServices from "./services/noteServices";
+import Notification from "./Notification";
 import { useState, useEffect } from "react";
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
     name: "",
     number: "",
   });
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [successMessage, setSuccessMessage] = useState("")
 
   useEffect(() => {
     noteServices.getAll().then((response) => {
@@ -69,6 +72,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={errorMessage} />
       <h2>Phonebook</h2>
       <div>
         Filter shown with
