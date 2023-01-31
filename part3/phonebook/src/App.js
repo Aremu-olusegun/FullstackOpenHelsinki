@@ -1,128 +1,145 @@
-import axios from "axios";
-import React from "react";
-import noteServices from "./services/noteServices";
-import Notification from "./Notification";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
+import Filter from './Filter'
+import PersonForm from './PersonForm'
+import personService from './services/persons'
+import Content from './Content'
+import Notification from './Notification'
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-  const [filteredName, setFilteredName] = useState("");
-  const [data, setData] = useState({
-    name: "",
-    number: "",
-  });
-  const [errorMessage, setErrorMessage] = useState('some error happened...')
-  const [successMessage, setSuccessMessage] = useState("")
+  const [allPersons, setAllPersons] = useState([])
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [newFilter, setNewFilter] = useState("")
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
-    noteServices.getAll().then((response) => {
-      setPersons(response.data);
-    });
-  }, []);
+    personService.getAll()
+    .then(response => {
+      console.log(response.data)
+      setAllPersons(response.data)
+    })
+  },[allPersons.length])
 
-  let inputfiltered = (event) => {
-    let value = event.target.value;
-    if (value !== "") {
-      let filteredResult = persons.filter((user) =>
-        user.name.toLowerCase().startsWith(value.toLowerCase())
-      );
-      setPersons(filteredResult);
-      setFilteredName(value);
-    } else {
-      setPersons(persons);
-    }
-
-    setFilteredName(value);
-  };
-
-  const handleTextChange = (evt) => {
-    const value = evt.target.value;
-    setData({
-      ...data,
-      [evt.target.name]: value,
-    });
-  };
-
-  function formSubmit(e) {
-    e.preventDefault();
-    const filteredSearch = persons.find(
-      (person) => person.name === data.name && person.number === data.number
-    );
-    if (filteredSearch) {
-      window.alert(`${data.name} and ${data.number} has already been added`);
-    }
-    const noteObject = {
-      name: data.name,
-      number: data.number,
-    };
-    axios.post("http://localhost:3500/persons", noteObject).then((response) => {
-      setPersons([...persons, response.data]);
-      setData({ name: "", number: "" });
-    });
+  function handleNameChange(e){
+    let name = e.target.value
+    setNewName(name)
   }
 
-  const deletePerson = (id, name) => {
-    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      noteServices.deletePerson(`${id}`).then((response) => {
-        // update the state to reflect the changes
-        setPersons(persons.filter((person) => person.id !== id));
-      });
-    }
-  };
+  function handleNumberChange(e){
+    let number = e.target.value
+    setNewNumber(number)
+  }
 
-  return (
-    <div>
-      <Notification message={errorMessage} />
-      <h2>Phonebook</h2>
-      <div>
-        Filter shown with
-        <input
-          type="search"
-          value={filteredName}
-          onChange={inputfiltered}
-          className="input"
-          placeholder="Filter"
-        />
-      </div>
-      <form onSubmit={formSubmit}>
-        <div>
-          Name:
-          <input
-            value={data.name}
-            onChange={handleTextChange}
-            name="name"
-            label="Name"
-            placeholder="input name"
-          />
-        </div>
-        <div>
-          Number:
-          <input
-            value={data.number}
-            onChange={handleTextChange}
-            name="number"
-            label="use number"
-            placeholder="input number"
-          />
-        </div>
-        <button type="submit"> Submit </button>
-      </form>
-      {persons && persons.length > 0 ? (
-        persons.map((user) => (
-          <li key={user.id} className="user">
-            <span className="user-name">{user.name}</span>
-            <span className="user-number">{user.number}</span>
-            <button onClick={() => deletePerson(user.id, user.name)}>
-              delete
-            </button>
-          </li>
-        ))
-      ) : (
-        <p>No results found!</p>
-      )}
-    </div>
-  );
+
+  const filterSearch = (e) => {
+    const keyword = e.target.value;
+    setNewFilter(keyword)
+    if (keyword === '') {
+      setPersons(allPersons);
+      return
+    } else {
+      const results = allPersons.filter((user) => {
+        return user.name.toLowerCase().startsWith(keyword.toLowerCase());
+      });
+      setPersons(results);
+    }
 };
 
-export default App;
+function deletePerson(id){
+  const filteredPerson = allPersons.filter(person => person.id === id)
+  const personName = filteredPerson[0].name
+  const personId = filteredPerson[0].id
+  if(window.confirm(`Delete ${personName} ?`)) {
+    personService.remove(personId)
+    console.log(`${personName} successfully deleted`)
+    setMessage(
+      `${personName} was succesfully deleted`
+    )
+    setAllPersons(allPersons.filter(person => person.id !== personId))
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000);
+  }
+}
 
+  function submitForm(e){
+    e.preventDefault()
+    const person = persons.filter(person => person.name === newName);
+    const personToAdd = person[0];
+    const updatedPerson = {...personToAdd, number: newNumber}
+
+    if(person.length !== 0){
+      if(window.confirm(`${personToAdd.name} is already added to the phonebook, replace the old number with a new one ?`)){
+        personService
+        .update(updatedPerson.id, updatedPerson)
+        .then(returnedPerson => {
+          setAllPersons(allPersons.map(personItem => personItem.id !== personToAdd.id ? personItem : returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          setMessage(`${updatedPerson.name} was successfully updated`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log(error)
+          setPersons(persons.filter(person => person.id !== updatedPerson.id))
+          setNewName('')
+          setNewNumber('')
+          setMessage(
+            `[ERROR] ${updatedPerson.name} was already deleted from server`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
+      }
+    }
+    else {
+      console.log(newName)
+      const personToAdd = {
+          name: newName,
+          number: newNumber
+        }
+        personService
+          .create(personToAdd)
+          .then(returnedPerson => {
+            setAllPersons(allPersons.concat(returnedPerson))
+            setNewName('')
+            setNewNumber('')
+            setMessage(
+              `${newName} was successfully added`
+            )
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setMessage(
+              `[ERROR] ${error.response.data.error}`
+            )
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+            console.log(error.response.data)
+          })
+  }
+  }
+
+  return (
+    <>
+      <div>
+        <h2 className="text-3xl font-bold underline">Phonebook</h2>
+        <Notification message={message}/>
+        <Filter onChange={filterSearch} name={newName} value={newFilter}/>
+        <h3>Add a new</h3>
+        <PersonForm submitForm={submitForm} newNumber={newNumber} newName={newName} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
+        <h2>Numbers</h2>
+        <Content persons={persons} allPersons={allPersons} deletePerson={deletePerson}/>
+      </div>
+    </>
+  )
+}
+
+export default App
