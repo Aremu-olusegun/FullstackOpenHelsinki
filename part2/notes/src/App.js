@@ -11,8 +11,13 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState('some error happened...')
 
   useEffect(() => {
-    notesService.getAll().then((response) => setNotes(response.data)).catch(error => console.log('fail'))
+    notesService.getAll()
+    .then((response) => {
+      setNotes(response.data)
+      console.log(response.data)
+    })
   }, []);
+  console.log(notes)
 
   const handleTextChange = (e) => {
     setNewValue(e.target.value);
@@ -42,7 +47,7 @@ const App = () => {
     };
     notesService.create(noteObject).then((response) => {
       setNotes(notes.concat(response.data));
-      setNotes("");
+      setNewValue("");
     });
     setNewValue("");
   }
@@ -60,7 +65,7 @@ const App = () => {
       {notes.map((note) => (
         <Note
           note={note}
-          toggleImportance={toggleImportanceOf(note.id)}
+          toggleImportance={() => toggleImportanceOf(note.id)}
           key={note.id}
         />
       ))}
