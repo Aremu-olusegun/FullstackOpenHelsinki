@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
-import personService from './services/persons'
+import all from './services/persons'
 import Content from './Content'
 import Notification from './Notification'
 
@@ -14,7 +14,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
-    personService.getAll()
+    all.getAll()
     .then(response => {
       console.log(response.data)
       console.log('found one')
@@ -53,7 +53,7 @@ function deletePerson(id){
   const personName = filteredPerson[0].name
   const personId = filteredPerson[0].id
   if(window.confirm(`Delete ${personName} ?`)) {
-    personService.remove(personId)
+    all.remove(personId)
     console.log(`${personName} successfully deleted`)
     setMessage(
       `${personName} was succesfully deleted`
@@ -73,7 +73,7 @@ function deletePerson(id){
 
     if(person.length !== 0){
       if(window.confirm(`${personToAdd.name} is already added to the phonebook, replace the old number with a new one ?`)){
-        personService
+        all
         .update(updatedPerson.id, updatedPerson)
         .then(returnedPerson => {
           setAllPersons(allPersons.map(personItem => personItem.id !== personToAdd.id ? personItem : returnedPerson))
@@ -104,7 +104,7 @@ function deletePerson(id){
           name: newName,
           number: newNumber
         }
-        personService
+        all
           .create(personToAdd)
           .then(returnedPerson => {
             setAllPersons(allPersons.concat(returnedPerson))
