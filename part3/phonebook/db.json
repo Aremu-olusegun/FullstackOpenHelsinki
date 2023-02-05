@@ -1,8 +1,13 @@
 {
   "persons": [
     {
+      "name": "Arto Hellas",
+      "number": "040-123456",
+      "id": 1
+    },
+    {
       "name": "Ada Lovelace",
-      "number": "36-6750-23456",
+      "number": "39-44-5323523",
       "id": 2
     },
     {
@@ -16,24 +21,9 @@
       "id": 4
     },
     {
-      "name": "Dan Abramov",
-      "number": "12-4567-3245",
+      "name": "john jones",
+      "number": "6656-085-53535",
       "id": 5
-    },
-    {
-      "name": "Ada Lovelace ",
-      "number": "350-6789-07575",
-      "id": 6
-    },
-    {
-      "name": "Danny Magic",
-      "number": "45-2340-7865",
-      "id": 7
-    },
-    {
-      "name": "Hanna jones",
-      "number": "",
-      "id": 8
     }
   ]
 }

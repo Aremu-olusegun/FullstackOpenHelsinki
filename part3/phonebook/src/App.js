@@ -17,9 +17,11 @@ const App = () => {
     personService.getAll()
     .then(response => {
       console.log(response.data)
+      console.log('found one')
       setAllPersons(response.data)
     })
   },[allPersons.length])
+  console.log(allPersons)
 
   function handleNameChange(e){
     let name = e.target.value
