@@ -17,7 +17,6 @@
     "build": "react-scripts build",
     "json-server": "json-server -p3001 --watch db.json",
     "test": "react-scripts test",
-    "start-proxy": "react-scripts start --proxy http://localhost:3001",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:3001",

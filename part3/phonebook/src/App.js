@@ -50,6 +50,7 @@ const App = () => {
 
 function deletePerson(id){
   const filteredPerson = allPersons.filter(person => person.id === id)
+  console.log(filteredPerson);
   const personName = filteredPerson[0].name
   const personId = filteredPerson[0].id
   if(window.confirm(`Delete ${personName} ?`)) {
